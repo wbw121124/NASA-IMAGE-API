@@ -1,0 +1,7 @@
+# wrangler.toml
+name = "nasa-apod-api"
+main = "src/index.js"
+compatibility_date = "2026-02-16"
+
+[vars]
+NASA_API_KEY = "DEMO_KEY"
