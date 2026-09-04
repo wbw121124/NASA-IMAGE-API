@@ -1,5 +1,5 @@
 # wrangler.toml
-name = "nasa-apod-api"
+name = 'nasa-image-api'
 main = "src/index.js"
 compatibility_date = "2026-02-16"
 
