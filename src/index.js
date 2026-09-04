@@ -20,9 +20,31 @@ export default {
 
     try {
       const url = new URL(request.url);
-      const date = url.searchParams.get('date') || new Date().toISOString().split('T')[0];
+      let date = url.searchParams.get('date');
       const mode = url.searchParams.get('mode') || 'json';
+      const last = url.searchParams.get('last');
 
+      // 处理 last 参数：计算前第 n 天的日期
+      if (last !== null && last !== undefined && last !== '') {
+        const daysAgo = parseInt(last, 10);
+        if (isNaN(daysAgo) || daysAgo < 0) {
+          return new Response(JSON.stringify({ 
+            error: 'Invalid last parameter. Must be a non-negative integer' 
+          }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
+        
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() - daysAgo);
+        date = targetDate.toISOString().split('T')[0];
+      } else if (!date) {
+        // 如果没有 date 也没有 last，使用今天的日期
+        date = new Date().toISOString().split('T')[0];
+      }
+
+      // 验证日期格式
       if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
         return new Response(JSON.stringify({ error: 'Invalid date format. Use YYYY-MM-DD' }), {
           status: 400,
